@@ -33,7 +33,7 @@ export default function StatusBadge({ status, daysLeft }: { status: Status, days
   const cls = STATUS_CLASS[status] ?? "badge-keluar";
   const dot = DOT_VAR[status] ?? "var(--text-muted)";
 
-  let label = status;
+  let label: string = status;
   if (status === "Aktif" && typeof daysLeft === "number") {
     if (daysLeft <= 2 && daysLeft > 0) {
       label = `Aktif (Sisa ${daysLeft} Hari)`;
