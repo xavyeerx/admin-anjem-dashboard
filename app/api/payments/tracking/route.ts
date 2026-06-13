@@ -17,7 +17,7 @@ export interface TrackingItem {
   days_left: number;
 }
 
-function isValidYear(s: string | null): boolean {
+function isValidYear(s: string | null): s is string {
   if (!s) return false;
   const y = parseInt(s.split("-")[0]);
   return y >= 2000 && y <= 2100;
