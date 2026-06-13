@@ -1,7 +1,23 @@
 import type { DriverRow, MembershipRow, ExpenseRow } from "@/lib/supabase/types";
 import type { Driver, Membership, ExpenseRecord } from "@/lib/data";
+import { todayISO, daysBetween } from "@/lib/utils";
 
-export function fromDriverRow(row: DriverRow): Driver {
+export function fromDriverRow(row: DriverRow & { memberships?: { tanggal_selesai_final: string }[] }): Driver {
+  let daysLeft: number | undefined = undefined;
+
+  if (row.memberships && row.memberships.length > 0) {
+    // Cari tanggal paling jauh
+    const validEnds = row.memberships
+      .map(m => m.tanggal_selesai_final)
+      .filter(Boolean);
+    
+    if (validEnds.length > 0) {
+      const ends = validEnds.map(d => new Date(d).getTime());
+      const latest = new Date(Math.max(...ends)).toISOString().split("T")[0];
+      daysLeft = daysBetween(todayISO(), latest);
+    }
+  }
+
   return {
     id: row.id,
     nama: row.nama,
@@ -10,6 +26,7 @@ export function fromDriverRow(row: DriverRow): Driver {
     statusOperasional: row.status_operasional,
     catatan: row.catatan ?? "",
     tanggalBergabung: row.tanggal_bergabung,
+    daysLeft,
   };
 }
 

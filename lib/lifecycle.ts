@@ -1,9 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { calcDeadline } from "@/lib/api";
-
-function todayISO(): string {
-  return new Date().toISOString().split("T")[0];
-}
+import { todayISO, daysBetween } from "@/lib/utils";
 
 /**
  * H+3 lewat → status pembayaran Lewat Jatuh Tempo.
@@ -20,7 +17,7 @@ export async function syncPaymentOverdue(db: SupabaseClient) {
 }
 
 /**
- * Membership habis → driver Aktif menjadi Menunggu Konfirmasi.
+ * H-3 membership habis → driver Aktif menjadi Menunggu Konfirmasi.
  * Off Sementara / Keluar tidak disentuh.
  */
 export async function syncExpiredMemberships(db: SupabaseClient) {
@@ -41,16 +38,29 @@ export async function syncExpiredMemberships(db: SupabaseClient) {
   }
 
   const expiredIds = [...latestEndByDriver.entries()]
-    .filter(([, end]) => end < today)
+    .filter(([, end]) => daysBetween(today, end) < 0)
     .map(([id]) => id);
 
-  if (!expiredIds.length) return;
+  if (expiredIds.length) {
+    await db
+      .from("drivers")
+      .update({ status_operasional: "Menunggu Konfirmasi" })
+      .eq("status_operasional", "Aktif")
+      .in("id", expiredIds);
+  }
 
-  await db
-    .from("drivers")
-    .update({ status_operasional: "Menunggu Konfirmasi" })
-    .eq("status_operasional", "Aktif")
-    .in("id", expiredIds);
+  // Auto-heal: kembalikan ke Aktif jika belum kedaluwarsa tapi telanjur Menunggu Konfirmasi
+  const activeIds = [...latestEndByDriver.entries()]
+    .filter(([, end]) => daysBetween(today, end) >= 0)
+    .map(([id]) => id);
+
+  if (activeIds.length) {
+    await db
+      .from("drivers")
+      .update({ status_operasional: "Aktif" })
+      .eq("status_operasional", "Menunggu Konfirmasi")
+      .in("id", activeIds);
+  }
 }
 
 /** Jalankan semua sinkronisasi lifecycle (panggil di awal request baca data). */

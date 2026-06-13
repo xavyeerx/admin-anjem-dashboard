@@ -3,6 +3,7 @@ import { createServiceClient } from "@/lib/supabase/server";
 import { jsonOk, jsonErr, withErrorHandler } from "@/lib/api";
 import { syncDriverLifecycle } from "@/lib/lifecycle";
 import type { JenisDriver } from "@/lib/supabase/types";
+import { todayISO, daysBetween } from "@/lib/utils";
 
 type MembershipBrief = {
   id: string;
@@ -75,6 +76,8 @@ export async function GET(req: NextRequest) {
     const groups: JenisDriver[] = ["ANJEM", "JASTIP"];
     let text = `🚨 WAYAE WAYAE FEE DRIVER 🚨\n📅 ${dateStr}\n`;
 
+    const isoToday = todayISO();
+
     for (const jenis of groups) {
       const inGroup = allDrivers.filter((d) => d.jenis_driver === jenis);
       if (inGroup.length === 0) continue;
@@ -83,13 +86,34 @@ export async function GET(req: NextRequest) {
       text += `${jenis === "ANJEM" ? "🚗" : "📦"} *DRIVER ${jenis}*\n`;
       text += `━━━━━━━━━━━━━━━\n`;
 
-      const aktif    = inGroup.filter((d) => d.status_operasional === "Aktif");
-      const belum    = inGroup.filter((d) => {
+      const belum = inGroup.filter((d) => {
         const m = getLatestMembership(d.memberships);
         return m?.status_pembayaran === "Belum Bayar";
       });
-      const menunggu = inGroup.filter((d) => d.status_operasional === "Menunggu Konfirmasi");
-      const off      = inGroup.filter((d) => d.status_operasional === "Off Sementara");
+
+      const aktif = inGroup.filter((d) => {
+        if (d.status_operasional !== "Aktif") return false;
+        const m = getLatestMembership(d.memberships);
+        if (m?.tanggal_selesai_final) {
+          const daysLeft = daysBetween(isoToday, m.tanggal_selesai_final);
+          return daysLeft > 2; // Hanya yang lebih dari H-2 yang benar-benar tampil di Aktif
+        }
+        return true;
+      });
+
+      const menunggu = inGroup.filter((d) => {
+        if (d.status_operasional === "Menunggu Konfirmasi") return true;
+        if (d.status_operasional === "Aktif") {
+          const m = getLatestMembership(d.memberships);
+          if (m?.tanggal_selesai_final) {
+            const daysLeft = daysBetween(isoToday, m.tanggal_selesai_final);
+            return daysLeft <= 2 && daysLeft >= 0; // H-2 hingga Hari H masuk ke Menunggu Konfirmasi
+          }
+        }
+        return false;
+      });
+
+      const off = inGroup.filter((d) => d.status_operasional === "Off Sementara");
 
       if (aktif.length) {
         text += `🟢 *AKTIF*\n`;
@@ -111,7 +135,21 @@ export async function GET(req: NextRequest) {
 
       if (menunggu.length) {
         text += `🟡 *MENUNGGU KONFIRMASI*\n`;
-        menunggu.forEach((d) => { text += `• ${d.nama}\n`; });
+        menunggu.forEach((d) => {
+          const m = getLatestMembership(d.memberships);
+          if (m?.tanggal_selesai_final) {
+            const daysLeft = daysBetween(isoToday, m.tanggal_selesai_final);
+            if (daysLeft > 0) {
+              text += `• ${d.nama} (Sisa ${daysLeft} Hari)\n`;
+            } else if (daysLeft === 0) {
+              text += `• ${d.nama} (Habis Hari Ini)\n`;
+            } else {
+              text += `• ${d.nama} (Membership Habis)\n`;
+            }
+          } else {
+            text += `• ${d.nama} (Membership Habis)\n`;
+          }
+        });
       }
 
       if (off.length) {

@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
     await syncDriverLifecycle(db);
     const { searchParams } = req.nextUrl;
 
-    let query = db.from("drivers").select("*").order("tanggal_bergabung", { ascending: false });
+    let query = db.from("drivers").select("*, memberships(tanggal_selesai_final)").order("tanggal_bergabung", { ascending: false });
 
     const status = searchParams.get("status");
     const jenis  = searchParams.get("jenis");

@@ -29,9 +29,20 @@ const DOT_VAR: Record<Status, string> = {
   "Lewat Jatuh Tempo":   "var(--badge-lewat-fg)",
 };
 
-export default function StatusBadge({ status }: { status: Status }) {
+export default function StatusBadge({ status, daysLeft }: { status: Status, daysLeft?: number }) {
   const cls = STATUS_CLASS[status] ?? "badge-keluar";
   const dot = DOT_VAR[status] ?? "var(--text-muted)";
+
+  let label = status;
+  if (status === "Aktif" && typeof daysLeft === "number") {
+    if (daysLeft <= 2 && daysLeft > 0) {
+      label = `Aktif (Sisa ${daysLeft} Hari)`;
+    } else if (daysLeft === 0) {
+      label = `Aktif (Habis Hari Ini)`;
+    }
+  } else if (status === "Menunggu Konfirmasi") {
+    label = `Menunggu Konfirmasi (Membership Habis)`;
+  }
 
   return (
     <span className={`status-badge ${cls}`}>
@@ -41,7 +52,7 @@ export default function StatusBadge({ status }: { status: Status }) {
         display: "inline-block",
         flexShrink: 0,
       }} />
-      {status}
+      {label}
     </span>
   );
 }

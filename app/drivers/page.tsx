@@ -314,7 +314,7 @@ function DriverRow({ driver, onEdit, onDelete }: { driver: Driver; onEdit: (d: D
           {driver.jenisDriver}
         </span>
       </td>
-      <td><StatusBadge status={driver.statusOperasional} /></td>
+      <td><StatusBadge status={driver.statusOperasional} daysLeft={driver.daysLeft} /></td>
       <td>
         <div style={{ display: "flex", alignItems: "center", gap: 6, color: "var(--text-secondary)", fontSize: 12 }}>
           <Phone size={12} />

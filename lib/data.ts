@@ -15,6 +15,7 @@ export interface Driver {
   statusOperasional: OperationalStatus;
   catatan: string;
   tanggalBergabung: string;
+  daysLeft?: number;
 }
 
 export interface Membership {
