@@ -235,7 +235,7 @@ export default function FinancePage() {
                 <LabelList
                   dataKey="total"
                   position="top"
-                  formatter={(val: number) => val > 0 ? new Intl.NumberFormat("id-ID").format(val) : ""}
+                  formatter={(val: any) => Number(val) > 0 ? new Intl.NumberFormat("id-ID").format(Number(val)) : ""}
                   style={{ fill: "var(--text-secondary)", fontSize: 11, fontWeight: 600, fontFamily: "JetBrains Mono, monospace" }}
                 />
               </Bar>
