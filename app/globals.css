@@ -1,26 +1,232 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
+/* ============================================================
+   LIGHT THEME (default — satu-satunya tema)
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-deep:    #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-card:    #ffffff;
+  --bg-elevated: #f8fafc;
+  --border:       rgba(0, 0, 0, 0.09);
+  --border-strong: rgba(0, 0, 0, 0.18);
+
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+
+  --amber:       #d97706;
+  --amber-glow:  rgba(217, 119, 6, 0.12);
+  --green:       #059669;
+  --green-glow:  rgba(5, 150, 105, 0.12);
+  --red:         #dc2626;
+  --red-glow:    rgba(220, 38, 38, 0.12);
+  --blue:        #2563eb;
+  --blue-glow:   rgba(37, 99, 235, 0.12);
+  --purple:      #7c3aed;
+  --purple-glow: rgba(124, 58, 237, 0.12);
+  --cyan:        #0891b2;
+  --cyan-glow:   rgba(8, 145, 178, 0.10);
+
+  --badge-aktif-bg:    #d1fae5;
+  --badge-aktif-fg:    #065f46;
+  --badge-aktif-br:    #6ee7b7;
+
+  --badge-menunggu-bg: #fef3c7;
+  --badge-menunggu-fg: #92400e;
+  --badge-menunggu-br: #fcd34d;
+
+  --badge-off-bg:      #dbeafe;
+  --badge-off-fg:      #1e40af;
+  --badge-off-br:      #93c5fd;
+
+  --badge-keluar-bg:   #f1f5f9;
+  --badge-keluar-fg:   #475569;
+  --badge-keluar-br:   #cbd5e1;
+
+  --badge-lunas-bg:    #d1fae5;
+  --badge-lunas-fg:    #065f46;
+  --badge-lunas-br:    #6ee7b7;
+
+  --badge-belum-bg:    #fef3c7;
+  --badge-belum-fg:    #92400e;
+  --badge-belum-br:    #fcd34d;
+
+  --badge-lewat-bg:    #fee2e2;
+  --badge-lewat-fg:    #991b1b;
+  --badge-lewat-br:    #fca5a5;
+
+  --badge-anjem-bg:    #ede9fe;
+  --badge-anjem-fg:    #4c1d95;
+  --badge-anjem-br:    #c4b5fd;
+
+  --badge-jastip-bg:   #cffafe;
+  --badge-jastip-fg:   #164e63;
+  --badge-jastip-br:   #67e8f9;
+
+  --row-border:  rgba(0,0,0,0.05);
+  --row-hover:   rgba(0,0,0,0.025);
+
+  --sidebar-w: 260px;
+  --radius: 10px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: "Outfit", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+.mono { font-family: "JetBrains Mono", monospace; }
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-amber {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+@keyframes theme-toggle {
+  0%   { transform: scale(1) rotate(0deg); }
+  40%  { transform: scale(0.8) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+@keyframes overlay-pop {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes overlay-spin {
+  to { transform: rotate(360deg); }
+}
+
+.action-overlay-spin {
+  animation: overlay-spin 0.75s linear infinite;
+}
+.animate-overlay-pop {
+  animation: overlay-pop 0.22s ease forwards;
+}
+.action-overlay-success {
+  box-shadow: 0 24px 48px rgba(0,0,0,0.35), 0 0 0 1px var(--green-glow);
+}
+.action-overlay-error {
+  box-shadow: 0 24px 48px rgba(0,0,0,0.35), 0 0 0 1px var(--red-glow);
+}
+
+.animate-fade-in       { animation: fade-in 0.4s ease forwards; }
+.animate-slide-in      { animation: slide-in 0.35s ease forwards; }
+.animate-pulse-amber   { animation: pulse-amber 2s ease-in-out infinite; }
+.animate-theme-toggle  { animation: theme-toggle 0.4s ease; }
+
+/* Stagger delays */
+.delay-1 { animation-delay: 0.05s; }
+.delay-2 { animation-delay: 0.10s; }
+.delay-3 { animation-delay: 0.15s; }
+.delay-4 { animation-delay: 0.20s; }
+.delay-5 { animation-delay: 0.25s; }
+.delay-6 { animation-delay: 0.30s; }
+.delay-7 { animation-delay: 0.35s; }
+.delay-8 { animation-delay: 0.40s; }
+
+/* Table */
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 1px solid var(--border); }
+tbody tr { border-bottom: 1px solid var(--row-border); transition: background 0.15s; }
+tbody tr:hover { background: var(--row-hover); }
+th {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  background: var(--bg-elevated);
+}
+td { padding: 12px 14px; color: var(--text-primary); }
+
+/* ============================================================
+   STATUS BADGES — use CSS vars for theme-aware colors
+   ============================================================ */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.badge-aktif    { background: var(--badge-aktif-bg);    color: var(--badge-aktif-fg);    border: 1px solid var(--badge-aktif-br); }
+.badge-menunggu { background: var(--badge-menunggu-bg); color: var(--badge-menunggu-fg); border: 1px solid var(--badge-menunggu-br); }
+.badge-off      { background: var(--badge-off-bg);      color: var(--badge-off-fg);      border: 1px solid var(--badge-off-br); }
+.badge-keluar   { background: var(--badge-keluar-bg);   color: var(--badge-keluar-fg);   border: 1px solid var(--badge-keluar-br); }
+.badge-lunas    { background: var(--badge-lunas-bg);    color: var(--badge-lunas-fg);    border: 1px solid var(--badge-lunas-br); }
+.badge-belum    { background: var(--badge-belum-bg);    color: var(--badge-belum-fg);    border: 1px solid var(--badge-belum-br); }
+.badge-lewat    { background: var(--badge-lewat-bg);    color: var(--badge-lewat-fg);    border: 1px solid var(--badge-lewat-br); }
+.badge-anjem    { background: var(--badge-anjem-bg);    color: var(--badge-anjem-fg);    border: 1px solid var(--badge-anjem-br); }
+.badge-jastip   { background: var(--badge-jastip-bg);   color: var(--badge-jastip-fg);   border: 1px solid var(--badge-jastip-br); }
+
+/* Card base */
+.card-base {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+/* Input styles */
+input, select, textarea {
+  background: var(--bg-elevated) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+  font-family: "Outfit", sans-serif !important;
+  transition: background 0.2s, color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--amber) !important;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--amber-glow) !important;
+}
+
+/* Card shadow */
+.card-shadow {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
 }
