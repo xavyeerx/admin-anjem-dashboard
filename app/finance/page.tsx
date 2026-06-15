@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { PieChart, Plus, TrendingUp, TrendingDown, DollarSign, Loader2, Trash2, Edit2 } from "lucide-react";
@@ -177,7 +177,7 @@ export default function FinancePage() {
   const isLoading = memLoading || expLoading;
 
   return (
-    <div style={{ padding: "28px 32px", position: "relative" }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", position: "relative" }}>
       <ActionOverlay state={overlay} />
       <ConfirmDialog open={confirmOpen} options={confirmOptions} onConfirm={handleConfirm} onCancel={handleCancel} />
 
@@ -190,7 +190,7 @@ export default function FinancePage() {
       )}
 
       {/* Summary Cards */}
-      <div className="animate-fade-in delay-1" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12, marginBottom: 24 }}>
+      <div className="animate-fade-in delay-1 stat-grid-5">
         {[
           { label: "Pemasukan ANJEM",  value: totalPemasukanAnjem,  icon: TrendingUp,   color: "var(--purple)" },
           { label: "Pemasukan JASTIP", value: totalPemasukanJastip, icon: TrendingUp,   color: "var(--cyan)" },
@@ -218,7 +218,7 @@ export default function FinancePage() {
       </div>
 
       {/* Charts */}
-      <div className="animate-fade-in delay-2" style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 20, marginBottom: 24 }}>
+      <div className="animate-fade-in delay-2 chart-2col">
         <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "20px 24px" }}>
           <h2 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", marginBottom: 16 }}>Pendapatan Bulanan</h2>
           <ResponsiveContainer width="100%" height={220}>
@@ -308,6 +308,7 @@ export default function FinancePage() {
         {/* Revenue Table */}
         {activeTab === "revenue" && (
           <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderTop: "none", borderRadius: "0 0 var(--radius) var(--radius)", overflow: "hidden" }}>
+            <div className="table-scroll">
             <table style={{ width: "100%" }}>
               <thead>
                 <tr>
@@ -340,6 +341,7 @@ export default function FinancePage() {
                 ))}
               </tbody>
             </table>
+            </div>
             {paidMemberships.length === 0 && !isLoading && (
               <div style={{ textAlign: "center", padding: "32px 0", color: "var(--text-secondary)", fontSize: 13 }}>Belum ada revenue.</div>
             )}
@@ -349,6 +351,7 @@ export default function FinancePage() {
         {/* Expense Table */}
         {activeTab === "expense" && (
           <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderTop: "none", borderRadius: "0 0 var(--radius) var(--radius)", overflow: "hidden" }}>
+            <div className="table-scroll">
             <table style={{ width: "100%" }}>
               <thead>
                 <tr>
@@ -411,6 +414,7 @@ export default function FinancePage() {
                 ))}
               </tbody>
             </table>
+            </div>
             {expenses.length === 0 && !isLoading && (
               <div style={{ textAlign: "center", padding: "32px 0", color: "var(--text-secondary)", fontSize: 13 }}>Belum ada pengeluaran.</div>
             )}

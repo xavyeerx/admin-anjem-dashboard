@@ -124,12 +124,7 @@ export default function ExportPage() {
         {EXPORT_ITEMS.map((item, idx) => (
           <div
             key={item.id}
-            className={`animate-fade-in delay-${idx + 2}`}
-            style={{
-              background: "var(--bg-card)", border: "1px solid var(--border)",
-              borderRadius: "var(--radius)", padding: "20px 24px",
-              display: "flex", alignItems: "center", gap: 20,
-            }}
+            className={`animate-fade-in delay-${idx + 2} export-item-card`}
           >
             {/* Icon */}
             <div style={{
@@ -160,7 +155,7 @@ export default function ExportPage() {
             </div>
 
             {/* Download buttons */}
-            <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+            <div className="export-item-btns">
               {item.formats.map(({ label, format }) => {
                 const key = `${item.id}-${format}`;
                 const st = states[key] ?? "idle";

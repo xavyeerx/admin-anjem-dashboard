@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo } from "react";
 import { Wallet, AlertTriangle, Clock, CheckCircle, Loader2, Search, ArrowUpDown } from "lucide-react";
@@ -104,7 +104,7 @@ export default function PaymentsPage() {
   };
 
   return (
-    <div style={{ padding: "28px 32px", position: "relative" }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", position: "relative" }}>
       <ActionOverlay state={overlay} />
       <ConfirmDialog open={confirmOpen} options={confirmOptions} onConfirm={handleConfirm} onCancel={handleCancel} />
 
@@ -121,7 +121,7 @@ export default function PaymentsPage() {
       )}
 
       {/* Summary cards */}
-      <div className="animate-fade-in delay-1" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 24 }}>
+      <div className="animate-fade-in delay-1 stat-grid-3">
         {[
           { label: "Total Tracking", value: loading ? "—" : items.length, icon: Wallet, color: "var(--blue)", bg: "var(--blue-glow)", border: "rgba(37,99,235,0.2)" },
           { label: "Belum Bayar",    value: loading ? "—" : belumBayar,   icon: Clock,   color: "var(--amber)", bg: "var(--amber-glow)", border: "rgba(217,119,6,0.2)" },
@@ -163,8 +163,8 @@ export default function PaymentsPage() {
       </div>
 
       {/* Filters and Search */}
-      <div className="animate-fade-in delay-3" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
-        <div style={{ display: "flex", gap: 8 }}>
+      <div className="animate-fade-in delay-3 filter-bar">
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {["all", "Belum Bayar", "Lewat Jatuh Tempo"].map((f) => (
             <button key={f} onClick={() => setFilter(f)} style={{
               padding: "6px 14px", borderRadius: 8, border: "1px solid",
@@ -177,7 +177,7 @@ export default function PaymentsPage() {
             </button>
           ))}
         </div>
-        <div style={{ position: "relative", width: 250 }}>
+        <div className="filter-bar-search">
           <Search size={14} color="var(--text-muted)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
           <input
             type="text"
@@ -201,6 +201,7 @@ export default function PaymentsPage() {
             <Loader2 size={20} className="action-overlay-spin" /> Memuat data pembayaran...
           </div>
         ) : (
+          <div className="table-scroll">
           <table style={{ width: "100%" }}>
             <thead>
               <tr>
@@ -289,6 +290,7 @@ export default function PaymentsPage() {
               })}
             </tbody>
           </table>
+          </div>
         )}
 
         {!loading && processedItems.length === 0 && (

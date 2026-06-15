@@ -41,11 +41,15 @@ export default function Modal({ open, onClose, title, children, width = 500 }: M
           borderRadius: 14,
           overflow: "hidden",
           animation: "fade-in 0.2s ease",
+          maxHeight: "calc(100dvh - 32px)",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
           padding: "18px 20px", borderBottom: "1px solid var(--border)",
+          flexShrink: 0,
         }}>
           <h2 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>{title}</h2>
           <button
@@ -59,7 +63,7 @@ export default function Modal({ open, onClose, title, children, width = 500 }: M
             <X size={14} />
           </button>
         </div>
-        <div style={{ padding: "20px" }}>
+        <div style={{ padding: "20px", overflowY: "auto" }}>
           {children}
         </div>
       </div>
