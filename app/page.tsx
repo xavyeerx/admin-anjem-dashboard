@@ -84,7 +84,7 @@ function FinanceCard({
       position: "relative",
       overflow: "hidden",
       flex: 1,
-      minWidth: 200,
+      minWidth: "min(200px, 100%)",
     }}>
       <div style={{
         position: "absolute", bottom: -20, right: -20,
@@ -210,7 +210,7 @@ export default function DashboardPage() {
 
   if (loading && !stats) {
     return (
-      <div style={{ padding: "28px 32px", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 400, gap: 12, color: "var(--text-secondary)" }}>
+      <div style={{ padding: "var(--page-py) var(--page-px)", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 400, gap: 12, color: "var(--text-secondary)" }}>
         <Loader2 size={22} className="action-overlay-spin" /> Memuat dashboard...
       </div>
     );
@@ -218,34 +218,59 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div style={{ padding: "28px 32px", color: "var(--red)" }}>
+      <div style={{ padding: "var(--page-py) var(--page-px)", color: "var(--red)" }}>
         Gagal memuat dashboard: {error}
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 1400 }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", maxWidth: 1400 }}>
       {/* Header */}
-      <div className="animate-fade-in" style={{ marginBottom: 28, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <Zap size={18} color="var(--amber)" />
-            <span style={{ fontSize: 11, color: "var(--amber)", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              Operating System
-            </span>
+      <div className="animate-fade-in" style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+              <div style={{
+                display: "flex", alignItems: "center", justifyContent: "center",
+                width: 22, height: 22, borderRadius: 6,
+                background: "var(--amber-glow)", border: "1px solid rgba(217,119,6,0.25)",
+              }}>
+                <Zap size={12} color="var(--amber)" strokeWidth={2.5} />
+              </div>
+              <span style={{
+                fontSize: 10.5, color: "var(--amber)", fontWeight: 700,
+                letterSpacing: "0.12em", textTransform: "uppercase",
+              }}>
+                Pusat Kendali · ANJEM UGM
+              </span>
+            </div>
+            <h1 style={{
+              fontSize: 24, fontWeight: 800, color: "var(--text-primary)",
+              letterSpacing: "-0.03em", lineHeight: 1.15, margin: 0,
+            }}>
+              Dashboard Manajemen
+            </h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: 13, marginTop: 5, lineHeight: 1.5 }}>
+              Pantau driver, membership, dan keuangan ANJEM secara real-time
+            </p>
           </div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.03em" }}>
-            Dashboard Utama
-          </h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: 13, marginTop: 2 }}>
-            Seluruh operasional ANJEM dalam satu pandangan
-          </p>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>Hari ini</div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)" }}>
-            {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8,
+            background: "var(--bg-card)", border: "1px solid var(--border)",
+            borderRadius: 10, padding: "8px 14px", flexShrink: 0,
+          }}>
+            <div style={{
+              width: 7, height: 7, borderRadius: "50%",
+              background: "#10b981",
+              boxShadow: "0 0 0 2px rgba(16,185,129,0.25)",
+            }} />
+            <div>
+              <div style={{ fontSize: 10, color: "var(--text-secondary)", fontWeight: 500 }}>Hari ini</div>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.3 }}>
+                {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -300,7 +325,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts + Reminders */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: 20, alignItems: "start" }}>
+      <div className="charts-grid">
         {/* Revenue Chart */}
         <div className="animate-fade-in delay-3" style={{
           background: "var(--bg-card)", border: "1px solid var(--border)",

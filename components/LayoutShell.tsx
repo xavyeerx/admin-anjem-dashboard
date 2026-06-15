@@ -1,0 +1,37 @@
+"use client";
+
+import { useState } from "react";
+import { Menu } from "lucide-react";
+import Sidebar from "@/components/Sidebar";
+
+export default function LayoutShell({ children }: { children: React.ReactNode }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  return (
+    <>
+      <div
+        className={`sidebar-overlay${sidebarOpen ? "" : " hidden"}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      <Sidebar isMobileOpen={sidebarOpen} onMobileClose={() => setSidebarOpen(false)} />
+
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        <div className="mobile-topbar">
+          <button
+            className="mobile-topbar-btn"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Buka menu navigasi"
+          >
+            <Menu size={20} />
+          </button>
+          <img src="/logo-sidebar.png" alt="ANJEM" style={{ height: 32, objectFit: "contain" }} />
+        </div>
+
+        <main style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
+          {children}
+        </main>
+      </div>
+    </>
+  );
+}

@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, Users, CreditCard, BellRing,
   MessageSquare, Wallet, PieChart, Download,
-  TrendingUp,
+  TrendingUp, X,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -23,7 +23,12 @@ const NAV_ITEMS = [
 
 const GROUPS = ["Main", "Operasional", "Keuangan", "Tools"];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+export default function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
 
   const grouped = GROUPS.map((g) => ({
@@ -33,6 +38,7 @@ export default function Sidebar() {
 
   return (
     <aside
+      className={`sidebar-nav${isMobileOpen ? " sidebar-open" : ""}`}
       style={{
         width: "var(--sidebar-w)",
         minWidth: "var(--sidebar-w)",
@@ -52,9 +58,12 @@ export default function Sidebar() {
         borderBottom: "1px solid var(--border)",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: isMobileOpen ? "space-between" : "center",
       }}>
         <img src="/logo-sidebar.png" alt="ANJEM Logo" style={{ height: 42, objectFit: "contain" }} />
+        <button className="sidebar-close-btn" onClick={onMobileClose} aria-label="Tutup menu">
+          <X size={16} />
+        </button>
       </div>
 
       {/* Navigation */}
@@ -81,6 +90,7 @@ export default function Sidebar() {
                   icon={Icon}
                   isActive={isActive}
                   badge={item.badge}
+                  onNavigate={onMobileClose}
                 />
               );
             })}
@@ -115,19 +125,21 @@ export default function Sidebar() {
 }
 
 function NavLink({
-  href, label, icon: Icon, isActive, badge,
+  href, label, icon: Icon, isActive, badge, onNavigate,
 }: {
   href: string;
   label: string;
   icon: React.ElementType;
   isActive: boolean;
   badge?: string;
+  onNavigate?: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <Link
       href={href}
+      onClick={onNavigate}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
