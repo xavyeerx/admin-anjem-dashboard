@@ -252,9 +252,9 @@ input:focus, select:focus, textarea:focus {
    RESPONSIVE — SIDEBAR & MOBILE LAYOUT
    ============================================================ */
 
-/* Mobile top bar */
+/* Mobile top bar — default: visible, hidden only on desktop */
 .mobile-topbar {
-  display: none;
+  display: flex;
   align-items: center;
   gap: 12px;
   padding: 0 16px;
@@ -325,10 +325,6 @@ input:focus, select:focus, textarea:focus {
     display: none;
   }
 
-  .mobile-topbar {
-    display: flex !important;
-  }
-
   .sidebar-close-btn {
     display: flex;
     align-items: center;
@@ -351,7 +347,7 @@ input:focus, select:focus, textarea:focus {
 
 @media (min-width: 1025px) {
   .mobile-topbar {
-    display: none !important;
+    display: none;
   }
 
   .sidebar-overlay {
