@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { BellRing, AlertTriangle, Clock, PauseCircle, Phone, Loader2 } from "lucide-react";
 import { formatDate, formatRupiah } from "@/lib/data";
@@ -122,7 +122,7 @@ export default function RemindersPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: "28px 32px", display: "flex", alignItems: "center", gap: 12, color: "var(--text-secondary)" }}>
+      <div style={{ padding: "var(--page-py) var(--page-px)", display: "flex", alignItems: "center", gap: 12, color: "var(--text-secondary)" }}>
         <Loader2 size={20} className="action-overlay-spin" /> Memuat reminder...
       </div>
     );
@@ -130,12 +130,12 @@ export default function RemindersPage() {
 
   if (error) {
     return (
-      <div style={{ padding: "28px 32px", color: "var(--red)" }}>Gagal memuat: {error}</div>
+      <div style={{ padding: "var(--page-py) var(--page-px)", color: "var(--red)" }}>Gagal memuat: {error}</div>
     );
   }
 
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 860 }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", maxWidth: 860 }}>
       <PageHeader
         title="Reminder Center"
         subtitle="Halaman prioritas — semua yang butuh tindakan admin (data real-time)"

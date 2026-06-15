@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { MessageSquare, Copy, RefreshCw, Check, Zap } from "lucide-react";
@@ -36,7 +36,7 @@ export default function BroadcastPage() {
   };
 
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 900 }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", maxWidth: 900 }}>
       <PageHeader
         title="Broadcast Generator"
         subtitle="Generate broadcast WhatsApp otomatis dari database driver"

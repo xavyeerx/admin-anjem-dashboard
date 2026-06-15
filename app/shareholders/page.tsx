@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { ChevronRight, Plus, Settings, ArrowRight, Loader2 } from "lucide-react";
@@ -131,7 +131,7 @@ export default function ShareholdersPage() {
 
   if (isLoading) {
     return (
-      <div style={{ padding: "28px 32px", display: "flex", alignItems: "center", gap: 12, color: "var(--text-secondary)" }}>
+      <div style={{ padding: "var(--page-py) var(--page-px)", display: "flex", alignItems: "center", gap: 12, color: "var(--text-secondary)" }}>
         <Loader2 size={20} className="action-overlay-spin" /> Memuat data shareholder...
       </div>
     );
@@ -140,7 +140,7 @@ export default function ShareholdersPage() {
   const totalConfigPct = shareholders.reduce((s, sh) => s + (configPcts[sh.id] ?? sh.persentase), 0);
 
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 1000, position: "relative" }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", maxWidth: 1000, position: "relative" }}>
       <ActionOverlay state={overlay} />
       <ConfirmDialog open={confirmOpen} options={confirmOptions} onConfirm={handleConfirm} onCancel={handleCancel} />
 
@@ -277,6 +277,7 @@ export default function ShareholdersPage() {
           {!transfers || (transfers as { id: string }[]).length === 0 ? (
             <p style={{ color: "var(--text-secondary)", fontSize: 13 }}>Belum ada riwayat transfer.</p>
           ) : (
+            <div className="table-scroll">
             <table style={{ width: "100%" }}>
               <thead>
                 <tr>
@@ -312,6 +313,7 @@ export default function ShareholdersPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

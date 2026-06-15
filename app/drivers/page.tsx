@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Users, Plus, Search, Phone, Calendar, Filter, Loader2 } from "lucide-react";
@@ -133,7 +133,7 @@ export default function DriversPage() {
   };
 
   return (
-    <div style={{ padding: "28px 32px", position: "relative" }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", position: "relative" }}>
       <ActionOverlay state={overlay} />
       <ConfirmDialog
         open={confirmOpen}
@@ -218,6 +218,7 @@ export default function DriversPage() {
             <Loader2 size={20} className="animate-spin" /> Memuat driver...
           </div>
         ) : (
+          <div className="table-scroll">
           <table style={{ width: "100%" }}>
             <thead>
               <tr>
@@ -236,6 +237,7 @@ export default function DriversPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
         {!loading && drivers.length === 0 && (
           <div style={{ textAlign: "center", padding: "48px 0", color: "var(--text-secondary)" }}>

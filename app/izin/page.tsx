@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { CalendarOff, Plus, Loader2 } from "lucide-react";
@@ -86,7 +86,7 @@ export default function IzinPage() {
   };
 
   return (
-    <div style={{ padding: "28px 32px", position: "relative" }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", position: "relative" }}>
       <ActionOverlay state={overlay} />
       <ConfirmDialog open={confirmOpen} options={confirmOptions} onConfirm={handleConfirm} onCancel={handleCancel} />
 
@@ -129,6 +129,7 @@ export default function IzinPage() {
         <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--border)" }}>
           <h2 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>Riwayat Izin</h2>
         </div>
+        <div className="table-scroll">
         <table style={{ width: "100%" }}>
           <thead>
             <tr>
@@ -194,6 +195,7 @@ export default function IzinPage() {
             })}
           </tbody>
         </table>
+        </div>
         {izinLoading && (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, padding: 48, color: "var(--text-secondary)" }}>
             <Loader2 size={20} className="action-overlay-spin" /> Memuat data izin...

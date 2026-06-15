@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import LayoutShell from "@/components/LayoutShell";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 export const metadata: Metadata = {
@@ -17,10 +17,7 @@ export default function RootLayout({
     <html lang="id" data-theme="light">
       <body style={{ display: "flex", minHeight: "100vh", background: "var(--bg-deep)" }}>
         <ThemeProvider>
-          <Sidebar />
-          <main style={{ flex: 1, minWidth: 0, overflow: "auto" }}>
-            {children}
-          </main>
+          <LayoutShell>{children}</LayoutShell>
         </ThemeProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { CreditCard, Plus, Loader2, Search } from "lucide-react";
@@ -175,7 +175,7 @@ export default function MembershipPage() {
   };
 
   return (
-    <div style={{ padding: "28px 32px", position: "relative" }}>
+    <div style={{ padding: "var(--page-py) var(--page-px)", position: "relative" }}>
       <ActionOverlay state={overlay} />
       <ConfirmDialog
         open={confirmOpen}
@@ -254,6 +254,7 @@ export default function MembershipPage() {
             <Loader2 size={20} /> Memuat membership...
           </div>
         ) : (
+          <div className="table-scroll">
           <table style={{ width: "100%" }}>
             <thead>
               <tr>
@@ -329,6 +330,7 @@ export default function MembershipPage() {
               })}
             </tbody>
           </table>
+          </div>
         )}
         {!loading && memberships.length > 0 && filteredMemberships.length === 0 && (
           <div style={{ textAlign: "center", padding: 48, color: "var(--text-secondary)" }}>
