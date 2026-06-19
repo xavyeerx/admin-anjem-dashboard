@@ -49,6 +49,8 @@ export default function SuperAdminPage() {
   const [cabangSaving, setCabangSaving] = useState(false);
   const [cabangError, setCabangError] = useState<string | null>(null);
   const [editCabangId, setEditCabangId] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string>("");
 
   // User state
   const [userList, setUserList] = useState<UserInfo[]>([]);
@@ -135,16 +137,29 @@ export default function SuperAdminPage() {
     setCabangSaving(true);
     setCabangError(null);
     try {
+      // Upload logo if a new file was selected
+      let logoUrl = cabangForm.logo_url || null;
+      if (logoFile) {
+        const fd = new FormData();
+        fd.append("file", logoFile);
+        const upRes = await fetch("/api/super/upload-logo", { method: "POST", body: fd });
+        const upJson = await upRes.json();
+        if (!upRes.ok || upJson.error) { setCabangError(upJson.error || "Gagal upload logo"); return; }
+        logoUrl = upJson.data.url;
+      }
+
       const url = editCabangId ? `/api/cabang/${editCabangId}` : "/api/cabang";
       const method = editCabangId ? "PATCH" : "POST";
       const body = editCabangId
-        ? { nama: cabangForm.nama, universitas: cabangForm.universitas, kota: cabangForm.kota, warna: cabangForm.warna, logo_url: cabangForm.logo_url || null }
-        : { ...cabangForm, logo_url: cabangForm.logo_url || null };
+        ? { nama: cabangForm.nama, universitas: cabangForm.universitas, kota: cabangForm.kota, warna: cabangForm.warna, logo_url: logoUrl }
+        : { ...cabangForm, logo_url: logoUrl };
       const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const json = await res.json();
       if (!res.ok || json.error) { setCabangError(json.error || "Gagal menyimpan"); return; }
       setShowCabangForm(false);
       setCabangForm(DEFAULT_CABANG_FORM);
+      setLogoFile(null);
+      setLogoPreview("");
       setEditCabangId(null);
       fetchCabang();
     } finally { setCabangSaving(false); }
@@ -161,6 +176,8 @@ export default function SuperAdminPage() {
 
   const startEditCabang = (c: CabangInfo) => {
     setCabangForm({ id: c.id, nama: c.nama, universitas: c.universitas, kota: c.kota, warna: c.warna, logo_url: c.logo_url ?? "" });
+    setLogoFile(null);
+    setLogoPreview(c.logo_url ?? "");
     setEditCabangId(c.id);
     setShowCabangForm(true);
   };
@@ -322,7 +339,7 @@ export default function SuperAdminPage() {
                 <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1e293b", margin: 0 }}>Manajemen Cabang</h2>
               </div>
               <button
-                onClick={() => { setShowCabangForm(true); setEditCabangId(null); setCabangForm(DEFAULT_CABANG_FORM); setCabangError(null); }}
+                onClick={() => { setShowCabangForm(true); setEditCabangId(null); setCabangForm(DEFAULT_CABANG_FORM); setCabangError(null); setLogoFile(null); setLogoPreview(""); }}
                 style={primaryBtnStyle}
               >
                 <Plus size={14} /> Tambah Cabang
@@ -361,7 +378,43 @@ export default function SuperAdminPage() {
                     <LightField label="Nama" value={cabangForm.nama} onChange={v => setCabangForm(f => ({ ...f, nama: v }))} placeholder="ANJEM UGM" required />
                     <LightField label="Universitas" value={cabangForm.universitas} onChange={v => setCabangForm(f => ({ ...f, universitas: v }))} placeholder="Universitas Gadjah Mada" required />
                     <LightField label="Kota" value={cabangForm.kota} onChange={v => setCabangForm(f => ({ ...f, kota: v }))} placeholder="Yogyakarta" />
-                    <LightField label="Logo URL" value={cabangForm.logo_url} onChange={v => setCabangForm(f => ({ ...f, logo_url: v }))} placeholder="https://..." />
+                    {/* Logo upload */}
+                    <div>
+                      <label style={labelStyle}>Logo Cabang</label>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        {logoPreview && (
+                          <div style={{ width: 44, height: 44, borderRadius: 10, border: "1px solid #e2e8f0", overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc" }}>
+                            <img src={logoPreview} alt="preview" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                          </div>
+                        )}
+                        <label style={{
+                          flex: 1, padding: "9px 14px", border: "1.5px dashed #cbd5e1", borderRadius: 10,
+                          fontSize: 13, color: "#64748b", cursor: "pointer", background: "#f8fafc",
+                          display: "flex", alignItems: "center", gap: 8, transition: "border-color 0.15s",
+                        }}
+                          onMouseEnter={e => (e.currentTarget.style.borderColor = "#6d28d9")}
+                          onMouseLeave={e => (e.currentTarget.style.borderColor = "#cbd5e1")}
+                        >
+                          <span style={{ fontSize: 16 }}>📁</span>
+                          <span>{logoFile ? logoFile.name : "Pilih file (png/jpg/webp/svg)"}</span>
+                          <input
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                            style={{ display: "none" }}
+                            onChange={e => {
+                              const f = e.target.files?.[0];
+                              if (!f) return;
+                              setLogoFile(f);
+                              setLogoPreview(URL.createObjectURL(f));
+                            }}
+                          />
+                        </label>
+                        {logoPreview && (
+                          <button type="button" onClick={() => { setLogoFile(null); setLogoPreview(""); setCabangForm(f => ({ ...f, logo_url: "" })); }}
+                            style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: 18, padding: "4px 6px" }} title="Hapus logo">✕</button>
+                        )}
+                      </div>
+                    </div>
                     <div>
                       <label style={labelStyle}>Warna Brand</label>
                       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -372,7 +425,7 @@ export default function SuperAdminPage() {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end" }}>
-                    <LightCancelBtn onClick={() => { setShowCabangForm(false); setEditCabangId(null); }} />
+                    <LightCancelBtn onClick={() => { setShowCabangForm(false); setEditCabangId(null); setLogoFile(null); setLogoPreview(""); }} />
                     <LightSaveBtn saving={cabangSaving} label={editCabangId ? "Simpan" : "Buat Cabang"} />
                   </div>
                 </form>
