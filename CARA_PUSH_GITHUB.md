@@ -42,7 +42,7 @@ Hubungkan folder project lokal Anda dengan repository yang baru saja dibuat di G
 
 Jalankan perintah ini:
 ```bash
-git remote add origin <URL_REPOSITORY_ANDA>
+git remote add origin https://github.com/xavyeerx/admin-anjem-dashboard
 ```
 *(Ganti `<URL_REPOSITORY_ANDA>` dengan URL yang Anda salin dari GitHub).*
 
