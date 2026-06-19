@@ -6,19 +6,21 @@ import { useState } from "react";
 import {
   LayoutDashboard, Users, CreditCard, BellRing,
   MessageSquare, Wallet, PieChart, Download,
-  TrendingUp, X,
+  TrendingUp, X, FileText,
 } from "lucide-react";
+import { useCabang } from "@/lib/context/CabangContext";
 
 const NAV_ITEMS = [
-  { href: "/",            label: "Dashboard",      icon: LayoutDashboard, group: "Main" },
-  { href: "/drivers",     label: "Driver",          icon: Users,           group: "Operasional" },
-  { href: "/membership",  label: "Membership",      icon: CreditCard,      group: "Operasional" },
-  { href: "/payments",    label: "Pembayaran",      icon: Wallet,          group: "Operasional" },
-  { href: "/reminders",   label: "Reminder Center", icon: BellRing,        group: "Operasional", badge: "3" },
-  { href: "/broadcast",   label: "Broadcast",       icon: MessageSquare,   group: "Tools" },
-  { href: "/finance",     label: "Keuangan",        icon: PieChart,        group: "Keuangan" },
-  { href: "/shareholders",label: "Shareholder",     icon: TrendingUp,      group: "Keuangan" },
-  { href: "/export",      label: "Export & Backup", icon: Download,        group: "Tools" },
+  { path: "",             label: "Dashboard",      icon: LayoutDashboard, group: "Main" },
+  { path: "/drivers",     label: "Driver",          icon: Users,           group: "Operasional" },
+  { path: "/membership",  label: "Membership",      icon: CreditCard,      group: "Operasional" },
+  { path: "/payments",    label: "Pembayaran",      icon: Wallet,          group: "Operasional" },
+  { path: "/reminders",   label: "Reminder Center", icon: BellRing,        group: "Operasional" },
+  { path: "/izin",        label: "Izin Driver",     icon: FileText,        group: "Operasional" },
+  { path: "/broadcast",   label: "Broadcast",       icon: MessageSquare,   group: "Tools" },
+  { path: "/finance",     label: "Keuangan",        icon: PieChart,        group: "Keuangan" },
+  { path: "/shareholders",label: "Shareholder",     icon: TrendingUp,      group: "Keuangan" },
+  { path: "/export",      label: "Export & Backup", icon: Download,        group: "Tools" },
 ];
 
 const GROUPS = ["Main", "Operasional", "Keuangan", "Tools"];
@@ -30,10 +32,17 @@ interface SidebarProps {
 
 export default function Sidebar({ isMobileOpen = false, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
+  const cabang = useCabang();
+  const base = `/${cabang.id}`;
+
+  const navItems = NAV_ITEMS.map(item => ({
+    ...item,
+    href: `${base}${item.path}`,
+  }));
 
   const grouped = GROUPS.map((g) => ({
     label: g,
-    items: NAV_ITEMS.filter((item) => item.group === g),
+    items: navItems.filter((item) => item.group === g),
   }));
 
   return (
@@ -52,15 +61,26 @@ export default function Sidebar({ isMobileOpen = false, onMobileClose }: Sidebar
         overflow: "hidden",
       }}
     >
-      {/* Logo */}
+      {/* Logo + Branch badge */}
       <div style={{
         padding: "20px 20px 16px",
         borderBottom: "1px solid var(--border)",
         display: "flex",
         alignItems: "center",
-        justifyContent: isMobileOpen ? "space-between" : "center",
+        justifyContent: "space-between",
       }}>
-        <img src="/logo-sidebar.png" alt="ANJEM Logo" style={{ height: 42, objectFit: "contain" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+          <img src="/logo-sidebar.png" alt="ANJEM Logo" style={{ height: 38, objectFit: "contain", flexShrink: 0 }} />
+          <div style={{
+            fontSize: 11, fontWeight: 700, color: "var(--brand)",
+            background: "var(--brand-glow)",
+            border: "1px solid var(--brand-border)",
+            padding: "2px 8px", borderRadius: 99,
+            letterSpacing: "0.04em", whiteSpace: "nowrap",
+          }}>
+            {cabang.id.toUpperCase()}
+          </div>
+        </div>
         <button className="sidebar-close-btn" onClick={onMobileClose} aria-label="Tutup menu">
           <X size={16} />
         </button>
@@ -89,7 +109,6 @@ export default function Sidebar({ isMobileOpen = false, onMobileClose }: Sidebar
                   label={item.label}
                   icon={Icon}
                   isActive={isActive}
-                  badge={item.badge}
                   onNavigate={onMobileClose}
                 />
               );
@@ -106,18 +125,18 @@ export default function Sidebar({ isMobileOpen = false, onMobileClose }: Sidebar
       }}>
         <div style={{
           width: 32, height: 32, borderRadius: "50%",
-          background: "linear-gradient(135deg, #dbeafe, #93c5fd)",
-          border: "1px solid #93c5fd",
+          background: "var(--brand-glow)",
+          border: "1px solid var(--brand-border)",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 12, fontWeight: 700,
-          color: "#1d4ed8",
+          color: "var(--brand)",
           flexShrink: 0,
         }}>
           A
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text-primary)" }}>Admin</div>
-          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>ANJEM UGM</div>
+          <div style={{ fontSize: 11, color: "var(--text-secondary)" }}>{cabang.nama}</div>
         </div>
       </div>
     </aside>
@@ -125,13 +144,12 @@ export default function Sidebar({ isMobileOpen = false, onMobileClose }: Sidebar
 }
 
 function NavLink({
-  href, label, icon: Icon, isActive, badge, onNavigate,
+  href, label, icon: Icon, isActive, onNavigate,
 }: {
   href: string;
   label: string;
   icon: React.ElementType;
   isActive: boolean;
-  badge?: string;
   onNavigate?: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
@@ -147,29 +165,19 @@ function NavLink({
         padding: "9px 10px", borderRadius: 8, marginBottom: 2,
         textDecoration: "none",
         background: isActive
-          ? "var(--amber-glow)"
+          ? "var(--brand-glow)"
           : hovered
           ? "rgba(0,0,0,0.05)"
           : "transparent",
-        color: isActive ? "var(--amber)" : hovered ? "var(--text-primary)" : "var(--text-secondary)",
+        color: isActive ? "var(--brand)" : hovered ? "var(--text-primary)" : "var(--text-secondary)",
         fontWeight: isActive ? 600 : 400,
         fontSize: 13.5,
         transition: "all 0.15s ease",
-        border: isActive ? "1px solid rgba(217,119,6,0.22)" : "1px solid transparent",
+        border: isActive ? "1px solid var(--brand-border)" : "1px solid transparent",
       }}
     >
       <Icon size={15} strokeWidth={isActive ? 2.5 : 2} />
       <span style={{ flex: 1 }}>{label}</span>
-      {badge && (
-        <span style={{
-          background: "var(--red)",
-          color: "#fff",
-          fontSize: 10, fontWeight: 700,
-          padding: "1px 6px", borderRadius: 99, lineHeight: "18px",
-        }}>
-          {badge}
-        </span>
-      )}
     </Link>
   );
 }

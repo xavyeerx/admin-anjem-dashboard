@@ -1,22 +1,22 @@
 "use client";
 
 import { useApi, apiMutate } from "./useApi";
-import type { TrackingItem } from "@/app/api/payments/tracking/route";
+import type { TrackingItem } from "@/app/api/[cabang]/payments/tracking/route";
 
 export type { TrackingItem };
 
-export function usePaymentTracking() {
-  return useApi<TrackingItem[]>("/api/payments/tracking");
+export function usePaymentTracking(cabang: string) {
+  return useApi<TrackingItem[]>(`/api/${cabang}/payments/tracking`, [cabang]);
 }
 
 // Untuk item yang sudah punya membership_id
-export const markTrackingPaid = (membershipId: string, tanggalPembayaran?: string) =>
-  apiMutate(`/api/memberships/${membershipId}/pay`, "POST", {
+export const markTrackingPaid = (cabang: string, membershipId: string, tanggalPembayaran?: string) =>
+  apiMutate(`/api/${cabang}/memberships/${membershipId}/pay`, "POST", {
     tanggal_pembayaran: tanggalPembayaran,
   });
 
 // Untuk Menunggu Konfirmasi: buat membership baru langsung Lunas
-export const createAndPayMembership = (body: {
+export const createAndPayMembership = (cabang: string, body: {
   driver_id: string;
   jenis_driver: string;
   tanggal_mulai: string;
@@ -26,7 +26,7 @@ export const createAndPayMembership = (body: {
   d.setDate(d.getDate() + 13); // +13 hari untuk masa aktif 14 hari inklusif
   const tanggal_selesai_awal = d.toISOString().split("T")[0];
 
-  return apiMutate("/api/memberships", "POST", {
+  return apiMutate(`/api/${cabang}/memberships`, "POST", {
     ...body,
     tanggal_selesai_awal,
     status_pembayaran: "Lunas",

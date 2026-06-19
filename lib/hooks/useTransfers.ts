@@ -3,12 +3,12 @@
 import { useApi, apiMutate } from "./useApi";
 import type { TransferRow } from "@/lib/supabase/types";
 
-export function useTransfers() {
-  return useApi<TransferRow[]>("/api/transfers");
+export function useTransfers(cabang: string) {
+  return useApi<TransferRow[]>(`/api/${cabang}/transfers`, [cabang]);
 }
 
-export const createTransfer = (body: Omit<TransferRow, "id" | "created_at">) =>
-  apiMutate<TransferRow>("/api/transfers", "POST", body);
+export const createTransfer = (cabang: string, body: Omit<TransferRow, "id" | "created_at" | "cabang_id">) =>
+  apiMutate<TransferRow>(`/api/${cabang}/transfers`, "POST", body);
 
-export const deleteTransfer = (id: string) =>
-  apiMutate(`/api/transfers/${id}`, "DELETE");
+export const deleteTransfer = (cabang: string, id: string) =>
+  apiMutate(`/api/${cabang}/transfers/${id}`, "DELETE");

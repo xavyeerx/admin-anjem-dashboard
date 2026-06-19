@@ -5,4 +5,5 @@ export { useIzin } from "./useIzin";
 export { useExpenses } from "./useExpenses";
 export { useShareholders } from "./useShareholders";
 export { useTransfers } from "./useTransfers";
+export { usePaymentTracking } from "./usePaymentTracking";
 export { useDashboardStats } from "./useDashboard";

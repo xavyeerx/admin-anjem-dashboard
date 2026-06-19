@@ -13,9 +13,9 @@ interface ShareholderData {
   };
 }
 
-export function useShareholders() {
-  return useApi<ShareholderData>("/api/shareholders");
+export function useShareholders(cabang: string) {
+  return useApi<ShareholderData>(`/api/${cabang}/shareholders`, [cabang]);
 }
 
-export const updateShareholders = (shareholders: { id: string; persentase: number }[]) =>
-  apiMutate("/api/shareholders", "PUT", { shareholders });
+export const updateShareholders = (cabang: string, shareholders: { id: string; persentase: number }[]) =>
+  apiMutate(`/api/${cabang}/shareholders`, "PUT", { shareholders });

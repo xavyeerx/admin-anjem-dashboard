@@ -9,9 +9,40 @@ export type StatusPembayaran = "Lunas" | "Belum Bayar" | "Lewat Jatuh Tempo";
 export interface Database {
   public: {
     Tables: {
+      cabang: {
+        Row: {
+          id: string;
+          nama: string;
+          universitas: string;
+          kota: string;
+          logo_url: string | null;
+          warna: string;
+          aktif: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          nama: string;
+          universitas: string;
+          kota?: string;
+          logo_url?: string | null;
+          warna?: string;
+          aktif?: boolean;
+        };
+        Update: {
+          nama?: string;
+          universitas?: string;
+          kota?: string;
+          logo_url?: string | null;
+          warna?: string;
+          aktif?: boolean;
+        };
+      };
+
       drivers: {
         Row: {
           id: string;
+          cabang_id: string;
           nama: string;
           no_whatsapp: string | null;
           jenis_driver: JenisDriver;
@@ -23,6 +54,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          cabang_id: string;
           nama: string;
           no_whatsapp?: string | null;
           jenis_driver: JenisDriver;
@@ -46,6 +78,7 @@ export interface Database {
       memberships: {
         Row: {
           id: string;
+          cabang_id: string;
           driver_id: string;
           jenis_driver: JenisDriver;
           tanggal_mulai: string;
@@ -61,6 +94,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          cabang_id: string;
           driver_id: string;
           jenis_driver: JenisDriver;
           tanggal_mulai: string;
@@ -92,6 +126,7 @@ export interface Database {
       izin_records: {
         Row: {
           id: string;
+          cabang_id: string;
           driver_id: string;
           membership_id: string | null;
           jumlah_hari: number;
@@ -101,6 +136,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          cabang_id: string;
           driver_id: string;
           membership_id?: string | null;
           jumlah_hari: number;
@@ -118,6 +154,7 @@ export interface Database {
       expenses: {
         Row: {
           id: string;
+          cabang_id: string;
           tanggal: string;
           kategori: string;
           nominal: number;
@@ -126,6 +163,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          cabang_id: string;
           tanggal: string;
           kategori: string;
           nominal: number;
@@ -143,6 +181,7 @@ export interface Database {
       shareholders: {
         Row: {
           id: string;
+          cabang_id: string;
           nama: string;
           persentase: number;
           created_at: string;
@@ -150,6 +189,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          cabang_id: string;
           nama: string;
           persentase: number;
           created_at?: string;
@@ -165,6 +205,7 @@ export interface Database {
       transfers: {
         Row: {
           id: string;
+          cabang_id: string;
           tanggal: string;
           nominal: number;
           keterangan: string | null;
@@ -172,6 +213,7 @@ export interface Database {
         };
         Insert: {
           id?: string;
+          cabang_id: string;
           tanggal: string;
           nominal: number;
           keterangan?: string | null;
@@ -192,6 +234,7 @@ export interface Database {
 }
 
 // ---- Convenience Row Types ----
+export type CabangRow       = Database["public"]["Tables"]["cabang"]["Row"];
 export type DriverRow       = Database["public"]["Tables"]["drivers"]["Row"];
 export type MembershipRow   = Database["public"]["Tables"]["memberships"]["Row"];
 export type IzinRow         = Database["public"]["Tables"]["izin_records"]["Row"];

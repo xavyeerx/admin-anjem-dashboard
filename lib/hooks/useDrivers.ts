@@ -3,7 +3,7 @@
 import { useApi, apiMutate } from "./useApi";
 import type { DriverRow } from "@/lib/supabase/types";
 
-export function useDrivers(params?: {
+export function useDrivers(cabang: string, params?: {
   status?: string;
   jenis?: string;
   q?: string;
@@ -13,19 +13,19 @@ export function useDrivers(params?: {
   if (params?.jenis)  qs.set("jenis", params.jenis);
   if (params?.q)      qs.set("q", params.q);
 
-  const url = `/api/drivers${qs.toString() ? `?${qs}` : ""}`;
-  return useApi<DriverRow[]>(url, [params?.status, params?.jenis, params?.q]);
+  const url = `/api/${cabang}/drivers${qs.toString() ? `?${qs}` : ""}`;
+  return useApi<DriverRow[]>(url, [cabang, params?.status, params?.jenis, params?.q]);
 }
 
-export function useDriver(id: string) {
-  return useApi<DriverRow & { memberships: unknown[] }>(`/api/drivers/${id}`, [id]);
+export function useDriver(cabang: string, id: string) {
+  return useApi<DriverRow & { memberships: unknown[] }>(`/api/${cabang}/drivers/${id}`, [cabang, id]);
 }
 
-export const createDriver = (body: Partial<DriverRow>) =>
-  apiMutate<DriverRow>("/api/drivers", "POST", body);
+export const createDriver = (cabang: string, body: Partial<DriverRow>) =>
+  apiMutate<DriverRow>(`/api/${cabang}/drivers`, "POST", body);
 
-export const updateDriver = (id: string, body: Partial<DriverRow>) =>
-  apiMutate<DriverRow>(`/api/drivers/${id}`, "PUT", body);
+export const updateDriver = (cabang: string, id: string, body: Partial<DriverRow>) =>
+  apiMutate<DriverRow>(`/api/${cabang}/drivers/${id}`, "PUT", body);
 
-export const deleteDriver = (id: string) =>
-  apiMutate(`/api/drivers/${id}`, "DELETE");
+export const deleteDriver = (cabang: string, id: string) =>
+  apiMutate(`/api/${cabang}/drivers/${id}`, "DELETE");

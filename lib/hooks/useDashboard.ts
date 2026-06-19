@@ -49,6 +49,6 @@ export interface DashboardStats {
   }>;
 }
 
-export function useDashboardStats() {
-  return useApi<DashboardStats>("/api/dashboard/stats");
+export function useDashboardStats(cabang: string) {
+  return useApi<DashboardStats>(`/api/${cabang}/dashboard/stats`, [cabang]);
 }

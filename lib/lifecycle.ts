@@ -5,28 +5,35 @@ import { todayISO, daysBetween } from "@/lib/utils";
 /**
  * H+3 lewat → status pembayaran Lewat Jatuh Tempo.
  * Status operasional TIDAK diubah (driver boleh tetap Aktif).
+ * Scoped per cabang jika cabang diberikan.
  */
-export async function syncPaymentOverdue(db: SupabaseClient) {
+export async function syncPaymentOverdue(db: SupabaseClient, cabang?: string) {
   const today = todayISO();
-  await db
+  let q = db
     .from("memberships")
     .update({ status_pembayaran: "Lewat Jatuh Tempo" })
     .eq("status_pembayaran", "Belum Bayar")
     .not("deadline_pembayaran", "is", null)
     .lt("deadline_pembayaran", today);
+  if (cabang) q = q.eq("cabang_id", cabang);
+  await q;
 }
 
 /**
  * H-3 membership habis → driver Aktif menjadi Menunggu Konfirmasi.
  * Off Sementara / Keluar tidak disentuh.
+ * Scoped per cabang jika cabang diberikan.
  */
-export async function syncExpiredMemberships(db: SupabaseClient) {
+export async function syncExpiredMemberships(db: SupabaseClient, cabang?: string) {
   const today = todayISO();
 
-  const { data: memberships } = await db
+  let memQuery = db
     .from("memberships")
     .select("driver_id, tanggal_selesai_final, tanggal_mulai")
     .order("tanggal_mulai", { ascending: false });
+  if (cabang) memQuery = memQuery.eq("cabang_id", cabang);
+
+  const { data: memberships } = await memQuery;
 
   if (!memberships?.length) return;
 
@@ -64,9 +71,9 @@ export async function syncExpiredMemberships(db: SupabaseClient) {
 }
 
 /** Jalankan semua sinkronisasi lifecycle (panggil di awal request baca data). */
-export async function syncDriverLifecycle(db: SupabaseClient) {
-  await syncPaymentOverdue(db);
-  await syncExpiredMemberships(db);
+export async function syncDriverLifecycle(db: SupabaseClient, cabang?: string) {
+  await syncPaymentOverdue(db, cabang);
+  await syncExpiredMemberships(db, cabang);
 }
 
 /**

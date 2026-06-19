@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { email, password } = body;
+  const { email, password, cabang } = body;
 
   if (!email || !password) {
     return NextResponse.json({ data: null, error: "Email dan password wajib diisi" }, { status: 400 });
@@ -31,6 +31,19 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     return NextResponse.json({ data: null, error: error.message }, { status: 401 });
+  }
+
+  // If a cabang is specified (branch login), enforce that the user belongs to it.
+  // Super admins may sign in to any branch.
+  const role = data.user?.user_metadata?.role as string | undefined;
+  const userCabang = data.user?.user_metadata?.cabang_id as string | undefined;
+
+  if (cabang && role !== "super_admin" && userCabang !== cabang) {
+    await supabase.auth.signOut();
+    return NextResponse.json(
+      { data: null, error: "Akun ini tidak memiliki akses ke cabang tersebut." },
+      { status: 403 },
+    );
   }
 
   return NextResponse.json({ data: { user: data.user }, error: null });
