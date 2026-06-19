@@ -70,7 +70,7 @@ export default function Sidebar({ isMobileOpen = false, onMobileClose }: Sidebar
         justifyContent: "space-between",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
-          <img src="/logo-sidebar.png" alt="ANJEM Logo" style={{ height: 38, objectFit: "contain", flexShrink: 0 }} />
+          <img src={cabang.logo_url ?? "/logo-sidebar.png"} alt="ANJEM Logo" style={{ height: 38, objectFit: "contain", flexShrink: 0 }} />
           <div style={{
             fontSize: 11, fontWeight: 700, color: "var(--brand)",
             background: "var(--brand-glow)",
