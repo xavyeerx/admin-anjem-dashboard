@@ -439,7 +439,7 @@ export default function DashboardPage() {
               { status: "Menunggu", jumlah: stats?.drivers.menunggu ?? 0, fill: "#f59e0b" },
               { status: "Off", jumlah: stats?.drivers.off ?? 0, fill: "#6366f1" },
             ]}
-            margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
+            margin={{ top: 20, right: 10, left: 0, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis dataKey="status" tick={{ fill: tickColor, fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -452,6 +452,12 @@ export default function DashboardPage() {
               {["#10b981", "#f59e0b", "#6366f1"].map((fill, i) => (
                 <Cell key={i} fill={fill} />
               ))}
+              <LabelList
+                dataKey="jumlah"
+                position="top"
+                formatter={(val: unknown) => Number(val) > 0 ? String(val) : ""}
+                style={{ fill: "var(--text-secondary)", fontSize: 11, fontWeight: 700 }}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
