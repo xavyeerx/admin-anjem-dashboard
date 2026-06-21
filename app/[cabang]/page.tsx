@@ -9,7 +9,7 @@ import { formatRupiah, formatDate } from "@/lib/data";
 import { useDashboardStats } from "@/lib/hooks/useDashboard";
 import { useCabang } from "@/lib/context/CabangContext";
 import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  AreaChart, Area, BarChart, Bar, LabelList, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
 
@@ -338,19 +338,20 @@ export default function DashboardPage() {
             <p style={{ fontSize: 12, color: "var(--text-secondary)" }}>Total pemasukan membership per bulan</p>
           </div>
           <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={monthly} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorPemasukan" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+            <BarChart data={monthly} margin={{ top: 25, right: 10, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
               <XAxis dataKey="bulan" tick={{ fill: tickColor, fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: tickColor, fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v / 1000}K`} />
-              <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="pemasukan" name="Pemasukan" stroke="#8b5cf6" fill="url(#colorPemasukan)" strokeWidth={2.5} />
-            </AreaChart>
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.04)" }} />
+              <Bar dataKey="pemasukan" name="Pemasukan" fill="#7c3aed" radius={[4, 4, 0, 0]}>
+                <LabelList
+                  dataKey="pemasukan"
+                  position="top"
+                  formatter={(val: unknown) => Number(val) > 0 ? new Intl.NumberFormat("id-ID").format(Number(val)) : ""}
+                  style={{ fill: "var(--text-secondary)", fontSize: 10, fontWeight: 600 }}
+                />
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </div>
 
