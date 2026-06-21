@@ -81,21 +81,58 @@ export default function LandingPage() {
           </div>
         )}
 
-        {/* Super Admin link */}
-        <div style={{ marginTop: 36, textAlign: "center", paddingBottom: 32 }}>
-          <Link
-            href="/super"
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              fontSize: 12, color: "#94a3b8", textDecoration: "none", fontWeight: 500,
-            }}
-          >
-            <Lock size={11} />
-            Super Admin
-          </Link>
-        </div>
+        {/* Super Admin card */}
+        <SuperAdminCard />
       </div>
     </div>
+  );
+}
+
+function SuperAdminCard() {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+        <div style={{ marginTop: 20, paddingBottom: 32 }}>
+          <div style={{
+            fontSize: 10, fontWeight: 600, letterSpacing: "0.1em",
+            color: "#94a3b8", textTransform: "uppercase",
+            marginBottom: 10, paddingLeft: 2,
+          }}>
+            Akses Khusus
+          </div>
+          <Link
+            href="/super"
+            style={{ textDecoration: "none" }}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+          >
+            <div style={{
+              background: hovered ? "#1e1b4b" : "#0f172a",
+              borderRadius: 14,
+              display: "flex", alignItems: "center", gap: 16,
+              padding: "16px 20px",
+              cursor: "pointer",
+              boxShadow: hovered ? "0 4px 20px rgba(0,0,0,0.2)" : "0 1px 6px rgba(0,0,0,0.1)",
+              transform: hovered ? "translateY(-1px)" : "none",
+              transition: "all 0.18s ease",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}>
+              <div style={{
+                width: 42, height: 42, borderRadius: 11, flexShrink: 0,
+                background: "linear-gradient(135deg, #7c3aed, #5b21b6)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: "0 2px 10px rgba(124,58,237,0.4)",
+              }}>
+                <Lock size={18} color="#fff" strokeWidth={2} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 2 }}>Super Admin</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>Kelola semua cabang & konfigurasi sistem</div>
+              </div>
+              <ChevronRight size={18} color={hovered ? "#a78bfa" : "rgba(255,255,255,0.25)"} style={{ transition: "color 0.18s", flexShrink: 0 }} />
+            </div>
+          </Link>
+        </div>
   );
 }
 
