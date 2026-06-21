@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, Users, CreditCard, BellRing,
   MessageSquare, Wallet, PieChart, Download,
-  TrendingUp, X, FileText,
+  TrendingUp, X, FileText, ArrowLeftRight,
 } from "lucide-react";
 import { useCabang } from "@/lib/context/CabangContext";
 
@@ -116,6 +116,33 @@ export default function Sidebar({ isMobileOpen = false, onMobileClose }: Sidebar
           </div>
         ))}
       </nav>
+
+      {/* Ganti Cabang */}
+      <div style={{ padding: "8px 10px", borderTop: "1px solid var(--border)" }}>
+        <Link
+          href="/"
+          style={{
+            display: "flex", alignItems: "center", gap: 10,
+            padding: "9px 10px", borderRadius: 8,
+            textDecoration: "none",
+            color: "var(--text-secondary)",
+            fontSize: 13.5,
+            transition: "all 0.15s ease",
+            border: "1px solid transparent",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,0,0,0.05)";
+            (e.currentTarget as HTMLAnchorElement).style.color = "var(--text-primary)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+            (e.currentTarget as HTMLAnchorElement).style.color = "var(--text-secondary)";
+          }}
+        >
+          <ArrowLeftRight size={15} strokeWidth={2} />
+          <span>Ganti Cabang</span>
+        </Link>
+      </div>
 
       {/* Bottom user info */}
       <div style={{
