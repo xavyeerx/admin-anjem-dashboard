@@ -90,12 +90,17 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ cab
 
       const belum = inGroup.filter((d) => {
         const m = getLatestMembership(d.memberships);
-        return m?.status_pembayaran === "Belum Bayar";
+        return (
+          m?.status_pembayaran === "Belum Bayar" ||
+          m?.status_pembayaran === "Lewat Jatuh Tempo"
+        );
       });
 
       const aktif = inGroup.filter((d) => {
         if (d.status_operasional !== "Aktif") return false;
         const m = getLatestMembership(d.memberships);
+        // Exclude driver yang belum/lewat bayar
+        if (m?.status_pembayaran !== "Lunas") return false;
         if (m?.tanggal_selesai_final) {
           const daysLeft = daysBetween(isoToday, m.tanggal_selesai_final);
           return daysLeft > 2; // Hanya yang lebih dari H-2 yang benar-benar tampil di Aktif
@@ -107,6 +112,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ cab
         if (d.status_operasional === "Menunggu Konfirmasi") return true;
         if (d.status_operasional === "Aktif") {
           const m = getLatestMembership(d.memberships);
+          if (m?.status_pembayaran !== "Lunas") return false;
           if (m?.tanggal_selesai_final) {
             const daysLeft = daysBetween(isoToday, m.tanggal_selesai_final);
             return daysLeft <= 2 && daysLeft >= 0; // H-2 hingga Hari H masuk ke Menunggu Konfirmasi
